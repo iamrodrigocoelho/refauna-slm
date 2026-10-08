@@ -1,0 +1,34 @@
+# --- Dados: NUNCA versionar documentos ou dados de campo do Refauna ---
+# Só entram no Git os READMEs e os arquivos de avaliação feitos a partir de material público.
+data/*
+!data/README.md
+!data/avaliacao/
+data/avaliacao/*
+!data/avaliacao/*.csv
+
+# Resultados, checkpoints e modelos (vão para o Hugging Face, não para o GitHub)
+resultados/
+outputs/
+checkpoints/
+*.gguf
+*.safetensors
+*.bin
+*.pt
+adapter_*/
+qdrant_data/
+
+# Segredos
+.env
+*.token
+hf_token*
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Sistema
+.DS_Store
+Thumbs.db
