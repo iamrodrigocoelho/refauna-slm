@@ -10,6 +10,22 @@ Os documentos e dados de campo do Refauna **não são versionados** neste reposi
 | Dados de campo | Google Drive, já agregados |
 | Perguntas de avaliação feitas com material público | `data/avaliacao/` (versionado) |
 
+## Pasta no Google Drive
+
+Os notebooks esperam esta estrutura em `MyDrive/refauna-slm/dados/`:
+
+```
+dados/
+├── documentos.csv      uma linha por arquivo (modelo em docs/documentos_modelo.csv)
+├── publico/
+├── interno/
+└── processado/         criada pelo notebook 02 (trechos.jsonl)
+```
+
+Colunas do `documentos.csv`: `arquivo` (caminho a partir de `dados/`), `titulo`, `autores` (separados por `;`), `ano`, `especie`, `tipo`, `idioma`, `acesso`, `fonte`. Uma coluna extra, como `observacao`, é aceita e ignorada.
+
+Não é preciso compartilhar a pasta por link: o Colab lê direto do seu Drive. A pasta `interno/` nunca deve ser pública.
+
 ## Rótulos de acesso
 
 Cada documento recebe um rótulo antes de entrar no projeto:

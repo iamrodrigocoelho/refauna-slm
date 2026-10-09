@@ -1,0 +1,4 @@
+docling-core[chunking]
+qdrant-client
+pandas
+pytest

@@ -31,13 +31,27 @@ refauna-slm/
 │   ├── README.md              regras de governança dos dados
 │   └── avaliacao/             perguntas de avaliação (só material público)
 ├── notebooks/
-│   └── 01_desempate_modelos.ipynb
+│   ├── 01_desempate_modelos.ipynb   Gemma 4 E4B contra Qwen3.5-4B, sem treino
+│   ├── 02_ingestao.ipynb            PDFs → trechos com metadados (Docling)
+│   └── 03_rag.ipynb                 índice híbrido, recall@5 e respostas com citação
+├── src/
+│   └── refauna_rag.py         funções do RAG usadas pelos notebooks
+├── tests/                     testes do RAG, sem GPU e sem rede
 ├── docs/
-│   └── diario.md              decisões, tropeços e lições
+│   ├── diario.md              decisões, tropeços e lições
+│   ├── artigos_refauna.csv    fontes encontradas, com acesso e licença
+│   └── documentos_modelo.csv  modelo do documentos.csv que fica no Drive
 └── README.md
 ```
 
-Próximos notebooks: `02_ingestao`, `03_rag`, `04_dataset_treino`, `05_finetune_qlora`, `06_avaliacao`.
+Próximos notebooks: `04_dataset_treino`, `05_finetune_qlora`, `06_avaliacao`.
+
+## Testes
+
+```
+pip install -r requirements-dev.txt
+pytest tests/
+```
 
 ## Roteiro
 
