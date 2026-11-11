@@ -1,0 +1,17 @@
+# Gemma 4 E2B · Refauna — variante só-texto para o Ollama (sem o projetor de visão/áudio).
+# Mesmo template e stops do GGUF; validado: respostas idênticas ao `ollama run hf.co/...` com temperatura 0.
+# Uso: coloque este arquivo e gemma-4-E2B-it.Q4_K_M.gguf na mesma pasta e rode
+#   ollama create gemma-refauna-texto -f Modelfile
+# Não envie o parâmetro `think` na API (ele altera o prompt do Gemma 4).
+FROM ./gemma-4-E2B-it.Q4_K_M.gguf
+TEMPLATE "{{ if .System }}<bos><|turn>system
+{{ .System }}<turn|>
+{{ end }}{{ if .Prompt }}<|turn>user
+{{ .Prompt }}<turn|>
+{{ end }}<|turn>model
+{{ .Response }}<turn|>
+"
+PARAMETER stop <bos>
+PARAMETER stop <|turn>
+PARAMETER stop <turn|>
+PARAMETER stop <|turn>user
