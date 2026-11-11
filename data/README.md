@@ -1,6 +1,6 @@
 # Dados
 
-Os documentos e dados de campo do Refauna **não são versionados** neste repositório. O `.gitignore` bloqueia tudo em `data/`, exceto este arquivo e os CSVs de `data/avaliacao/`.
+Os documentos e dados de campo do Refauna **não são versionados** neste repositório. O `.gitignore` bloqueia tudo em `data/`, exceto este arquivo. As perguntas de avaliação da primeira versão estão em `primeira-versao/data/avaliacao/`.
 
 ## Onde ficam
 
@@ -8,23 +8,27 @@ Os documentos e dados de campo do Refauna **não são versionados** neste reposi
 | --- | --- |
 | PDFs, relatórios, teses | Google Drive ou dataset privado no Kaggle |
 | Dados de campo | Google Drive, já agregados |
-| Perguntas de avaliação feitas com material público | `data/avaliacao/` (versionado) |
+| PDFs que alimentam o RAG e o treino | `training-files/` (local) ou `MyDrive/refauna-slm/training-files/` (Colab), não versionados |
+| Ficha de cada documento | `training-files/sources.csv` (modelo em [`training-files/sources.example.csv`](../training-files/sources.example.csv)) |
 
 ## Pasta no Google Drive
 
-Os notebooks esperam esta estrutura em `MyDrive/refauna-slm/dados/`:
+Os notebooks do Colab esperam esta estrutura em `MyDrive/refauna-slm/`:
 
 ```
-dados/
-├── documentos.csv      uma linha por arquivo (modelo em docs/documentos_modelo.csv)
-├── publico/
-├── interno/
-└── processado/         criada pelo notebook 02 (trechos.jsonl)
+refauna-slm/
+├── training-files/
+│   ├── sources.csv     uma linha por documento (modelo em training-files/sources.example.csv)
+│   └── *.pdf           os documentos
+├── data/               criada pelos notebooks (trechos, índice, conjunto de treino)
+└── outputs/            criada pelos notebooks (adaptadores, avaliações, gráficos)
 ```
 
-Colunas do `documentos.csv`: `arquivo` (caminho a partir de `dados/`), `titulo`, `autores` (separados por `;`), `ano`, `especie`, `tipo`, `idioma`, `acesso`, `fonte`. Uma coluna extra, como `observacao`, é aceita e ignorada.
+As colunas do `sources.csv` estão descritas em [`training-files/README.md`](../training-files/README.md). As que mais importam: `doc_id`, `filename`, `incluir_texto` (`sim` extrai o texto do PDF; `nao` usa só a ficha de catálogo), `paginas`, `license` e `redistributable`.
 
-Não é preciso compartilhar a pasta por link: o Colab lê direto do seu Drive. A pasta `interno/` nunca deve ser pública.
+No Mac, o app local lê a mesma pasta pelo Google Drive para desktop (variável `REFAUNA_DRIVE_DIR` no `.env`) ou uma cópia local em `data/`.
+
+Não é preciso compartilhar a pasta por link: o Colab lê direto do seu Drive. Documentos internos nunca devem ficar em pasta pública.
 
 ## Rótulos de acesso
 
