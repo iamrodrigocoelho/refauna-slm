@@ -1,0 +1,60 @@
+# Configuração do app local. Repositórios do HF e tags do Ollama ficam SÓ aqui (PRD §13.6).
+paths:
+  data_dir: data
+  chroma_dir: data/chroma
+  local_eval_dir: data/local_eval
+
+ollama:
+  host: http://localhost:11434
+  options: {temperature: 0.3, num_ctx: 4096, num_predict: 512}
+
+models:
+  # Desativado no M1 8 GB: a tag gemma4:e2b é nvfp4 (7,5 GB) e o Ollama exige 6,9 GiB (só há ~4,8 GiB).
+  # Reativar com uma tag Q4_K_M do Gemma 4 E2B original.
+  gemma_base: {label: "Gemma 4 E2B (original)",   tag: "gemma4:e2b",  family: gemma, enabled: false,
+               note: "não cabe no M1 8 GB (nvfp4, 7,5 GB)"}
+  # Variante só-texto (PRD F8.4): mesmos pesos e template do GGUF do HF, sem o projetor de visão/áudio (0,99 GB).
+  # `refauna models pull` baixa `source` e gera ollama/Modelfile.gemma_ft. Validada: 5/5 respostas idênticas (temp 0).
+  gemma_ft:   {label: "Gemma 4 E2B · Refauna",    tag: "refauna/gemma-4-e2b-refauna-text:Q4_K_M", family: gemma, colab_run: gemma4-e2b-refauna-qlora,
+               source: "hf.co/Refauna/gemma-4-e2b-refauna-GGUF:Q4_K_M", text_only: true}
+  qwen_base:  {label: "Qwen3.5-2B (original)",    tag: "qwen3.5:2b",  family: qwen}
+  qwen_ft:    {label: "Qwen3.5-2B · Refauna",     tag: "hf.co/iamrodrigocoelho/qwen3.5-2b-refauna-GGUF:Q4_K_M", family: qwen, colab_run: qwen3.5-2b-refauna-lora16}   # trocar para Refauna/ se for transferido
+
+retrieval: {top_k: 4, n_candidates: 20, rrf_k: 60, embed_model: google/embeddinggemma-300m}
+
+seed: 3407
+
+# App Gradio (F5). Perguntas testadas com gemma_ft e qwen_ft + RAG em 02/11/2026 (ver docs/roteiro-demo.md).
+# A da Tijuca saiu: resposta incompleta e 1 abstenção em 5 execuções.
+demo:
+  server_port: 7860
+  default_model: qwen_ft   # modelo principal da demo (docs/decisoes.md, ADR-15)
+  examples:
+    - "Qual o papel das cutias na dispersão de sementes?"
+    - "Como os colares de radiotelemetria afetaram as cutias reintroduzidas?"
+    - "Por que as antas são importantes para a floresta?"
+    - "O que é o crédito de interações ecológicas?"                                    # 5/5 nos dois FT (Genes et al., 2017)
+    - "Que estudos o Refauna tem sobre jabutis?"                                       # fichas do catálogo
+    - "Quantas onças-pintadas o Refauna reintroduziu no Parque Nacional da Tijuca?"   # abstenção
+  compare_defaults: ["qwen_base|norag", "qwen_base|rag", "qwen_ft|rag", "gemma_ft|rag"]
+
+# Avaliação local A/B/C/D (F6.2). judge_model = o mesmo juiz do Colab (só com --judge, requer internet).
+eval:
+  n_items: 40
+  mix: {rag: 0.6, closed_book: 0.2, unanswerable: 0.2}
+  judge_model: claude-sonnet-5-5
+
+# Model cards no Hugging Face (`refauna cards`). Repositórios SÓ aqui (PRD §13.6).
+hf_cards:
+  gemma:
+    name: "Gemma 4 E2B · Refauna"
+    base: google/gemma-4-e2b-it
+    unsloth_base: unsloth/gemma-4-E2B-it
+    colab_run: gemma4-e2b-refauna-qlora
+    repos: {lora: Refauna/gemma-4-e2b-refauna-lora, merged: Refauna/gemma-4-e2b-refauna, gguf: Refauna/gemma-4-e2b-refauna-GGUF}
+  qwen:
+    name: "Qwen3.5-2B · Refauna"
+    base: Qwen/Qwen3.5-2B
+    unsloth_base: unsloth/Qwen3.5-2B
+    colab_run: qwen3.5-2b-refauna-lora16
+    repos: {lora: iamrodrigocoelho/qwen3.5-2b-refauna-lora, merged: iamrodrigocoelho/qwen3.5-2b-refauna, gguf: iamrodrigocoelho/qwen3.5-2b-refauna-GGUF}
